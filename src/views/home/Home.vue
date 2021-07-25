@@ -146,18 +146,23 @@
     },
     created() {
       // 1、请求多个数据
-      getHomeMultiData().then(res => {
-        // this.result = res
-        // this.banners = res.data.banner
-        // this.recommends = res.data.recommend
-        this.banners = res.data.banner.list;
-        this.recommends = res.data.recommend.list;
-      })
+      this.getHomeMultiData()
 
       // 2.商品数据请求
-      getHomeGoods('pop', 1).then(res => {
-        console.log(res);
-      })
+      this.getHomeGoods()
+    },
+    methods: {
+      getHomeMultiData() {
+        getHomeMultiData().then(res => {
+          this.banners = res.data.banner.list;
+          this.recommends = res.data.recommend.list;
+        })
+      },
+      getHomeGoods() {
+        getHomeGoods('pop', 1).then(res => {
+          console.log(res);
+        })
+      }
     }
   }
 </script>
