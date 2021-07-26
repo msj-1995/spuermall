@@ -3,10 +3,11 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control class="tab-control" :titles="['流行', '精选', '新款']"></tab-control>
+    <home-swiper :banners="banners"/>
+    <recommend-view :recommends="recommends"/>
+    <feature-view/>
+    <tab-control class="tab-control" :titles="['流行', '精选', '新款']"/>
+    <goods-list :goods="goods['pop'].list"/>
     <ul>
       <li>列表1</li>
       <li>列表2</li>
@@ -120,6 +121,7 @@
 
   import NavBar from "components/common/navbar/NavBar";
   import TabControl from "components/content/tabControl/TabControl";
+  import GoodsList from "components/content/goods/GoodsList";
 
   import {getHomeMultiData, getHomeGoods} from "network/home";
 
@@ -130,7 +132,8 @@
       RecommendView,
       FeatureView,
       NavBar,
-      TabControl
+      TabControl,
+      GoodsList
     },
     data() {
       return {
@@ -148,8 +151,12 @@
       // 1、请求多个数据
       this.getHomeMultiData()
 
-      // 2.商品数据请求
-      this.getHomeGoods()
+      // 2.商品数据请求:this.函数名,调用的是vue methods中的函数，不使用this时表示的是使用import导入的函数
+      this.getHomeGoods('pop')
+
+      this.getHomeGoods('new')
+
+      this.getHomeGoods('sell')
     },
     methods: {
       getHomeMultiData() {
@@ -158,9 +165,12 @@
           this.recommends = res.data.recommend.list;
         })
       },
-      getHomeGoods() {
-        getHomeGoods('pop', 1).then(res => {
-          console.log(res);
+      getHomeGoods(type) {
+        const page = this.goods[type].page + 1
+        getHomeGoods(type, page).then(res => {
+          // 数据的解构：它会把我们从服务器取到的那一页的数组列表一个一个解构出来然后在放到goods中的list中
+          this.goods[type].list.push(...res.data.list)
+          this.goods[type].page += 1
         })
       }
     }
@@ -177,7 +187,7 @@
     color: #e9e9e9;
 
     /*让导航栏不滚动*/
-    position: fixed;
+    position: fixed !important;
     left: 0;
     right: 0;
     top: 0;
