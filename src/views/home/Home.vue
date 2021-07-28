@@ -3,13 +3,15 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"/>
-    <recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <tab-control class="tab-control"
-                 :titles="['流行', '精选', '新款']"
-                 @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
+    <scroll>
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <tab-control class="tab-control"
+                   :titles="['流行', '精选', '新款']"
+                   @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
     <ul>
       <li>列表1</li>
       <li>列表2</li>
@@ -39,6 +41,7 @@
   import NavBar from "components/common/navbar/NavBar";
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
+  import Scroll from "components/common/scroll/Scroll";
 
   import {getHomeMultiData, getHomeGoods} from "network/home";
 
@@ -50,7 +53,8 @@
       FeatureView,
       NavBar,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll
     },
     data() {
       return {
