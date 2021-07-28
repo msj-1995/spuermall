@@ -11,19 +11,29 @@ import BScroll from "better-scroll";
 
 export default {
   name: "Scroll",
+  props: {
+    probeType: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       scroll: null
     }
   },
   mounted() {
-    // 使用querySelector获取标签不太合适，如果项目中有多个相同的class名，则通过querySelector拿到的是第一个标签，有时候我们不知道哪一个是第一个，就会拿错
-    // vue中可以通过ref明确的拿到某一个标签
+    // 1.创建BScroll对象
     this.scroll = new BScroll(this.$refs.wrapper, {
-
+      click: true,
+      probeType: this.probeType
     })
 
-    this.scroll.scrollTo(0, 0)
+    // 监听滚动区域
+    this.scroll.on('scroll', (position) => {
+      // 把监听到的位置信息发送出去
+      this.$emit('scroll', position)
+    })
   },
   methods: {
     scrollTo(x, y, time=300) {

@@ -3,7 +3,9 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content" ref="scroll">
+    <!-- :probe-type加冒号和不加冒号的区别：不加冒号，"3"会被当成字符串传过去，而我们Scroll中设置的类型为Number
+       加了冒号后：如果符合标识符命名规范就会被当成变量，会去vue的data中取值传过去，如果是数组就会被当成数字类型（Number）传过去-->
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -12,7 +14,8 @@
                    @tabClick="tabClick"/>
       <goods-list :goods="showGoods"/>
     </scroll>
-    <back-top @click.native="backClick"/>
+    <!-- v-show:为true时显示，为false时隐藏-->
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -52,7 +55,8 @@ export default {
         'new': {page: 0, list: []},
         'sell': {page: 0, list: []}
       },
-      currentType: 'pop'
+      currentType: 'pop',
+      isShowBackTop: false
     }
   },
   created() {
@@ -92,6 +96,10 @@ export default {
       // 通过ref拿到Scroll组件中data中的scroll对象
       // 通过scroll拿到Scroll中的methods中的方法
       this.$refs.scroll.scrollTo(0, 0, 500)
+    },
+    contentScroll(position) {
+      // 在Home组件中就可以拿到Scroll中监听到的位置信息了,当y大于1000的时候显示返回顶部
+      this.isShowBackTop = (-position.y) > 1000
     },
 
     /**
