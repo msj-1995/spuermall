@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
@@ -23,6 +23,10 @@ export default {
   methods: {
     imageLoad() {
       this.$bus.$emit('itemImageLoad')
+    },
+    itemClick() {
+      // 需要从详情页返回Home,所以使用push最好,并且需要传递商品的id，以便查到更详细的信息：使用动态路由
+      this.$router.push('/detail/' + this.goodsItem.iid)
     }
   }
 }
