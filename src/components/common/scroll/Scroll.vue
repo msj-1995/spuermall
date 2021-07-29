@@ -60,6 +60,10 @@ export default {
     refresh() {
       // console.log('refresh');
       this.scroll && this.scroll.refresh()
+    },
+    // 获取组件离开时，滚动到的y的位置
+    getScrollY() {
+      return this.scroll ? this.scroll.y : 0
     }
   }
 }

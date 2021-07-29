@@ -68,7 +68,9 @@ export default {
       currentType: 'pop',
       isShowBackTop: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
+      // 用于保存离开组件时y的位置
+      saveY: 0
     }
   },
   created() {
@@ -93,6 +95,16 @@ export default {
     showGoods() {
       return this.goods[this.currentType].list
     }
+  },
+  destroyed() {
+    console.log('home组件销毁');
+  },
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.saveY, 0)
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY()
   },
   methods: {
     /**
