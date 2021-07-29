@@ -7,9 +7,7 @@
        加了冒号后：如果符合标识符命名规范就会被当成变量，会去vue的data中取值传过去，如果是数组就会被当成数字类型（Number）传过去-->
     <scroll class="content" ref="scroll"
             :probe-type="3"
-            @scroll="contentScroll"
-            :pull-up-load="true"
-            @pullingUp="loadMore">
+            @scroll="contentScroll">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -73,6 +71,11 @@ export default {
     this.getHomeGoods('new')
 
     this.getHomeGoods('sell')
+
+    // 3.监听总线事件，组件一创建完成，就开始监听
+    this.$bus.$on('itemImageLoad', () => {
+      this.$refs.scroll.refresh()
+    })
   },
   computed: {
     showGoods() {
@@ -99,15 +102,11 @@ export default {
     backClick() {
       // 通过ref拿到Scroll组件中data中的scroll对象
       // 通过scroll拿到Scroll中的methods中的方法
-      this.$refs.scroll.scrollTo(0, 0, 500)
+      this.$refs.scroll.scrollTo(0, 0, 1000)
     },
     contentScroll(position) {
       // 在Home组件中就可以拿到Scroll中监听到的位置信息了,当y大于1000的时候显示返回顶部
       this.isShowBackTop = (-position.y) > 1000
-    },
-    loadMore() {
-      // 针对当前的类型加载更多
-      this.getHomeGoods(this.currentType)
     },
 
     /**
@@ -125,8 +124,6 @@ export default {
         // 数据的解构：它会把我们从服务器取到的那一页的数组列表一个一个解构出来然后在放到goods中的list中
         this.goods[type].list.push(...res.data.list)
         this.goods[type].page += 1
-        // 设置可以多次刷新
-        this.$refs.scroll.finishPullUp()
       })
     }
   }
@@ -148,7 +145,7 @@ export default {
   color: #e9e9e9;
 
   /*让导航栏不滚动*/
-  position: fixed !important;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
