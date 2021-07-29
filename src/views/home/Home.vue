@@ -71,10 +71,12 @@ export default {
     this.getHomeGoods('new')
 
     this.getHomeGoods('sell')
-
-    // 3.监听总线事件，组件一创建完成，就开始监听
+  },
+  mounted() {
+    const refresh = this.debounce(this.$refs.scroll.refresh, 1)
+    // 监听总线事件，组件一创建完成，就开始监听
     this.$bus.$on('itemImageLoad', () => {
-      this.$refs.scroll.refresh()
+      refresh()
     })
   },
   computed: {
@@ -107,6 +109,18 @@ export default {
     contentScroll(position) {
       // 在Home组件中就可以拿到Scroll中监听到的位置信息了,当y大于1000的时候显示返回顶部
       this.isShowBackTop = (-position.y) > 1000
+    },
+    debounce(func, delay) {
+      let timer = null
+      // 参数是args,可变长，即可以不传
+      return function(...args) {
+        // 如果timer有值，则清除timer的值
+        if(timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          // 执行传入的函数：func
+          func.apply(this, args)
+        }, delay)
+      }
     },
 
     /**

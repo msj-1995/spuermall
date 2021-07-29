@@ -37,13 +37,15 @@ export default {
   },
   methods: {
     scrollTo(x, y, time = 300) {
-      this.scroll.scrollTo(x, y, time)
+      // 使用逻辑与符号，当this.scroll没有创建的时候就不会执行后面的代码，后面的类似
+      this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time)
     },
     finishPullUp() {
-      this.scroll.finishPullUp()
+      this.scroll && this.scroll.finishPullUp()
     },
     refresh() {
-      this.scroll.refresh()
+      // console.log('refresh');
+      this.scroll && this.scroll.refresh()
     }
   }
 }
