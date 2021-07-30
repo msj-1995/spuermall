@@ -1,10 +1,12 @@
 <template>
   <div id="detail">
     <!--导航-->
-    <detail-nav-bar></detail-nav-bar>
-    <detail-swiper :top-images="topImages"></detail-swiper>
-    <detail-base-info :GoodsInfo="goods"></detail-base-info>
-    <detail-shop-info :shop-info="shop"></detail-shop-info>
+    <detail-nav-bar class="detail-nav"></detail-nav-bar>
+    <scroll class="content">
+      <detail-swiper :top-images="topImages"></detail-swiper>
+      <detail-base-info :GoodsInfo="goods"></detail-base-info>
+      <detail-shop-info :shop-info="shop"></detail-shop-info>
+    </scroll>
   </div>
 </template>
 
@@ -13,6 +15,7 @@ import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
+import Scroll from "components/common/scroll/Scroll";
 
 import {getDetail, Goods, Shop} from "@/network/detail";
 
@@ -30,7 +33,8 @@ export default {
     DetailNavBar,
     DetailSwiper,
     DetailBaseInfo,
-    DetailShopInfo
+    DetailShopInfo,
+    Scroll
   },
   // 组件创建后获取并保存iid
   created() {
@@ -51,5 +55,20 @@ export default {
 </script>
 
 <style scoped>
+#detail {
+  position: relative;
+  z-index: 9;
+  background-color: #ffffff;
+  height: 100vh;
+}
 
+.detail-nav {
+  position: relative;
+  z-index: 9;
+  background-color: #ffffff;
+}
+
+.content {
+  height: calc(100% - 44px);
+}
 </style>

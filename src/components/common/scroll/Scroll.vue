@@ -33,7 +33,6 @@ export default {
       probeType: this.probeType,
       pullUpLoad: this.pullUpLoad
     })
-    console.log(this.scroll);
     // 2.监听滚动区域
     if(this.probeType === 2 || this.probeType === 3) {
       this.scroll.on('scroll', (position) => {
