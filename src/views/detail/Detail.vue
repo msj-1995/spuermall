@@ -8,6 +8,7 @@
       <detail-shop-info :shop-info="shop"></detail-shop-info>
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
       <detail-param-info :goods-param="paramInfo"></detail-param-info>
+      <detail-comment-info :comment-info="commentInfo"/>
     </scroll>
   </div>
 </template>
@@ -20,6 +21,7 @@ import DetailShopInfo from "./childComps/DetailShopInfo";
 import Scroll from "components/common/scroll/Scroll";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
+import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
 import {getDetail, Goods, Shop, GoodsParams} from "@/network/detail";
 
@@ -32,7 +34,8 @@ export default {
       goods: {},
       shop: {},
       detailInfo: {},
-      paramInfo: {}
+      paramInfo: {},
+      commentInfo: {}
     }
   },
   components: {
@@ -42,7 +45,8 @@ export default {
     DetailShopInfo,
     Scroll,
     DetailGoodsInfo,
-    DetailParamInfo
+    DetailParamInfo,
+    DetailCommentInfo
   },
   methods: {
     imageLoad() {
@@ -66,6 +70,10 @@ export default {
       this.detailInfo = res.result.detailInfo
       // 5.获取参数信息
       this.paramInfo = new GoodsParams(res.result.itemParams.info, res.result.itemParams.rule)
+      // 6.取出评论信息:由于不是所有的商品都有评论，所以需要先判断一下
+      if(res.result.rate.cRate !== 0) {
+        this.commentInfo = res.result.rate.list[0]
+      }
     })
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="shop-info">
+  <div class="shop-info" v-if="Object.keys(ShopInfo).length !== 0">
     <div class="shop-top">
       <img :src="ShopInfo.logo" />
       <span class="title">{{ShopInfo.name}}</span>
@@ -7,7 +7,7 @@
     <div class="shop-middle">
       <div class="shop-middle-item shop-middle-left">
         <div class="info-sells">
-          <div class="sells-num">{{ShopInfo.sells}}</div>
+          <div class="sells-num">{{ShopInfo.sells | sellCountFilter}}</div>
           <div class="sells-text">总销量</div>
         </div>
         <div class="info-goods">
@@ -42,6 +42,16 @@ export default {
       defaulr() {
         return {};
       }
+    }
+  },
+  filters: {
+    sellCountFilter(value) {
+      let result = value
+      if(value > 10000) {
+        // 如果销量大于1万，则使销量除以10000并保留1位小数
+        result = (result / 10000).toFixed(1) + '万'
+      }
+      return result
     }
   }
 };

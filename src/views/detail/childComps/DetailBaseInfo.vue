@@ -4,7 +4,10 @@
     <div class="goods-price">
       <span class="n-price">{{GoodsInfo.newPrice}}</span>
       <span class="o-price">{{GoodsInfo.oldPrice}}</span>
-      <span class="discount">{{GoodsInfo.discount}}</span>
+      <span class="discount"
+            :style="{backgroundColor: GoodsInfo.discountBgColor}">
+        {{GoodsInfo.discount}}
+      </span>
     </div>
     <div class="info-other">
       <span>{{GoodsInfo.columns[0]}}</span>
@@ -60,7 +63,7 @@ export default {
   font-size: 12px;
   padding: 2px 5px;
   color: #fff;
-  background-color: var(--color-high-text);
+  /*background-color: var(--color-high-text);*/
   border-radius: 8px;
   margin-left: 10px;
 }
