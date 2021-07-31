@@ -30,6 +30,8 @@ export default {
   methods: {
     titleClick(index) {
       this.currentIndex = index
+      // 发出事件
+      this.$emit('titleClick', index)
     },
     backClick() {
       // go(-1)回退一格，相当于back()

@@ -1,15 +1,15 @@
 <template>
   <div id="detail">
     <!--导航-->
-    <detail-nav-bar class="detail-nav"></detail-nav-bar>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick"></detail-nav-bar>
     <scroll class="content" ref="scroll">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :GoodsInfo="goods"></detail-base-info>
       <detail-shop-info :shop-info="shop"></detail-shop-info>
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
-      <detail-param-info :goods-param="paramInfo"></detail-param-info>
-      <detail-comment-info :comment-info="commentInfo"/>
-      <goods-list :goods="recommends"/>
+      <detail-param-info :goods-param="paramInfo" ref="params"></detail-param-info>
+      <detail-comment-info :comment-info="commentInfo" ref="comment"/>
+      <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
   </div>
 </template>
@@ -41,6 +41,8 @@ export default {
       paramInfo: {},
       commentInfo: {},
       recommends: [],
+      themeTopYs: [],
+      themeTopY: null
     }
   },
   components: {
@@ -58,6 +60,15 @@ export default {
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
+
+      this.themeTopYs = []
+      this.themeTopYs.push(0)
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+    },
+    titleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 100)
     }
   },
   // 组件创建后获取并保存iid
@@ -81,6 +92,16 @@ export default {
       if(res.result.rate.cRate !== 0) {
         this.commentInfo = res.result.rate.list[0]
       }
+
+      // 第2次获取，值不对（图片没有加载完成）
+      /*this.$nextTick(() => {
+        this.themeTopYs = []
+        this.themeTopYs.push(0)
+        this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+        console.log(this.themeTopYs);
+      })*/
     })
 
     // 请求推荐数据
@@ -88,9 +109,26 @@ export default {
       // 保存数据
       this.recommends = res.data.list
     })
+
+    // 第1次获取:值不对：$el没有渲染
+    /*this.themeTopYs = []
+    this.themeTopYs.push(0)
+    this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+    this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+    this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+    console.log(this.themeTopYs);*/
+
+    this.themeTopY = debounce(() => {
+      this.themeTopYs = []
+      this.themeTopYs.push(0)
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+    }, 100)
   },
   mounted() {
-
+  },
+  updated() {
   },
   destroyed() {
     this.$bus.off('itemImageLoad', this.itemImgListener)
