@@ -11,7 +11,7 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"/>
       <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
-    <detail-bottom-bar></detail-bottom-bar>
+    <detail-bottom-bar @addCart="addToCart"></detail-bottom-bar>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -95,6 +95,20 @@ export default {
 
       // 是否显示回到顶部
       this.isShowBackTop = (-position.y) > 1000
+    },
+    addToCart() {
+      // 1.获取购物车需要展示的信息，添加到购物车
+      const product = {}
+      // 图片取一张即可
+      product.image = this.topImages[0]
+      product.title = this.goods.title
+      // 描述信息
+      product.desc = this.goods.desc
+      product.price = this.goods.realPrice
+      product.iid = this.iid
+
+      // 2.将购买的商品添加到购物车:由vuex管理的cartList中,通过mutations提交
+      this.$store.commit('addCart', product)
     }
   },
   // 组件创建后获取并保存iid
