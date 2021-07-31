@@ -27,7 +27,7 @@ import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
 import {getDetail, Goods, Shop, GoodsParams, getRecommend} from "@/network/detail";
-import {debounce} from "@/common/utils";
+import {itemListenerMixin} from "@/common/mixin";
 
 export default {
   name: "Detail",
@@ -41,7 +41,6 @@ export default {
       paramInfo: {},
       commentInfo: {},
       recommends: [],
-      itemImgListener: null
     }
   },
   components: {
@@ -55,6 +54,7 @@ export default {
     DetailCommentInfo,
     GoodsList
   },
+  mixins: [itemListenerMixin],
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
@@ -90,11 +90,7 @@ export default {
     })
   },
   mounted() {
-    let newRefresh = debounce(this.$refs.scroll.refresh, 100)
-    this.itemImgListener = () => {
-      newRefresh()
-    }
-    this.$bus.on('itemImageLoad', this.itemImgListener)
+
   },
   destroyed() {
     this.$bus.off('itemImageLoad', this.itemImgListener)

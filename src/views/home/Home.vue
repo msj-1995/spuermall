@@ -41,7 +41,7 @@ import Scroll from "components/common/scroll/Scroll";
 import BackTop from "components/content/backTop/BackTop";
 
 import {getHomeMultiData, getHomeGoods} from "network/home";
-import {debounce} from "common/utils";
+import {itemListenerMixin} from "@/common/mixin";
 
 export default {
   name: "Home",
@@ -70,10 +70,10 @@ export default {
       tabOffsetTop: 0,
       isTabFixed: false,
       // 用于保存离开组件时y的位置
-      saveY: 0,
-      itemImgListener: null
+      saveY: 0
     }
   },
+  mixins: [itemListenerMixin],
   created() {
     // 1、请求多个数据
     this.getHomeMultiData()
@@ -86,12 +86,6 @@ export default {
     this.getHomeGoods('sell')
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 100)
-    // 对监听的事件进行保存
-    this.itemImgListener = () => {
-      refresh()
-    }
-    this.$bus.$on('itemImageLoad', this.itemImgListener)
   },
   computed: {
     showGoods() {
