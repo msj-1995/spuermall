@@ -38,10 +38,9 @@ import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
-import BackTop from "components/content/backTop/BackTop";
 
 import {getHomeMultiData, getHomeGoods} from "network/home";
-import {itemListenerMixin} from "@/common/mixin";
+import {itemListenerMixin, backTopMixin} from "@/common/mixin";
 
 export default {
   name: "Home",
@@ -52,8 +51,7 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
-    Scroll,
-    BackTop
+    Scroll
   },
   data() {
     return {
@@ -66,14 +64,13 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       // 用于保存离开组件时y的位置
       saveY: 0
     }
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     // 1、请求多个数据
     this.getHomeMultiData()
@@ -125,11 +122,6 @@ export default {
       }
       this.$refs.tabControl01.currentIndex = index
       this.$refs.tabControl02.currentIndex = index
-    },
-    backClick() {
-      // 通过ref拿到Scroll组件中data中的scroll对象
-      // 通过scroll拿到Scroll中的methods中的方法
-      this.$refs.scroll.scrollTo(0, 0, 1000)
     },
     contentScroll(position) {
       // 在Home组件中就可以拿到Scroll中监听到的位置信息了,当y大于1000的时候显示返回顶部

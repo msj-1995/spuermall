@@ -12,6 +12,7 @@
       <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
     <detail-bottom-bar></detail-bottom-bar>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -29,7 +30,7 @@ import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
 import {getDetail, Goods, Shop, GoodsParams, getRecommend} from "@/network/detail";
-import {itemListenerMixin} from "@/common/mixin";
+import {itemListenerMixin, backTopMixin} from "@/common/mixin";
 import {debounce} from "@/common/utils";
 
 export default {
@@ -61,7 +62,7 @@ export default {
     GoodsList,
     DetailBottomBar
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
@@ -91,6 +92,9 @@ export default {
           this.$refs.detailNav.currentIndex = this.currentIndex
         }
       }
+
+      // 是否显示回到顶部
+      this.isShowBackTop = (-position.y) > 1000
     }
   },
   // 组件创建后获取并保存iid
