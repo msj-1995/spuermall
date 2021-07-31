@@ -108,7 +108,9 @@ export default {
       product.iid = this.iid
 
       // 2.将购买的商品添加到购物车:由vuex管理的cartList中,通过mutations提交
-      this.$store.commit('addCart', product)
+      // this.$store.commit('addCart', product)
+      // 通过actions分发
+      this.$store.dispatch('addCart', product)
     }
   },
   // 组件创建后获取并保存iid
