@@ -70,7 +70,8 @@ export default {
       tabOffsetTop: 0,
       isTabFixed: false,
       // 用于保存离开组件时y的位置
-      saveY: 0
+      saveY: 0,
+      itemImgListener: null
     }
   },
   created() {
@@ -85,11 +86,12 @@ export default {
     this.getHomeGoods('sell')
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 1)
-    // 监听总线事件，组件一创建完成，就开始监听
-    this.$bus.$on('itemImageLoad', () => {
+    const refresh = debounce(this.$refs.scroll.refresh, 100)
+    // 对监听的事件进行保存
+    this.itemImgListener = () => {
       refresh()
-    })
+    }
+    this.$bus.$on('itemImageLoad', this.itemImgListener)
   },
   computed: {
     showGoods() {
@@ -104,7 +106,12 @@ export default {
     this.$refs.scroll.refresh()
   },
   deactivated() {
+    // 1.保存y值
     this.saveY = this.$refs.scroll.getScrollY()
+
+    // 2.取消全局事件监听:参数一，要取消的事件名，参数二，该事件名对应的函数
+    // 这里不能只传一个事件名，这样的话所有的该事件的监听都会被取消，如果传入函数的话，只会取消该事件对应的函数的监听
+    this.$bus.$off('itemImageLoad', this.itemImgListener)
   },
   methods: {
     /**

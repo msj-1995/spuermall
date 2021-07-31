@@ -9,6 +9,7 @@
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"></detail-goods-info>
       <detail-param-info :goods-param="paramInfo"></detail-param-info>
       <detail-comment-info :comment-info="commentInfo"/>
+      <goods-list :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -18,12 +19,15 @@ import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
-import Scroll from "components/common/scroll/Scroll";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
-import {getDetail, Goods, Shop, GoodsParams} from "@/network/detail";
+import Scroll from "components/common/scroll/Scroll";
+import GoodsList from "components/content/goods/GoodsList";
+
+import {getDetail, Goods, Shop, GoodsParams, getRecommend} from "@/network/detail";
+import {debounce} from "@/common/utils";
 
 export default {
   name: "Detail",
@@ -35,7 +39,9 @@ export default {
       shop: {},
       detailInfo: {},
       paramInfo: {},
-      commentInfo: {}
+      commentInfo: {},
+      recommends: [],
+      itemImgListener: null
     }
   },
   components: {
@@ -46,7 +52,8 @@ export default {
     Scroll,
     DetailGoodsInfo,
     DetailParamInfo,
-    DetailCommentInfo
+    DetailCommentInfo,
+    GoodsList
   },
   methods: {
     imageLoad() {
@@ -75,6 +82,22 @@ export default {
         this.commentInfo = res.result.rate.list[0]
       }
     })
+
+    // 请求推荐数据
+    getRecommend().then(res => {
+      // 保存数据
+      this.recommends = res.data.list
+    })
+  },
+  mounted() {
+    let newRefresh = debounce(this.$refs.scroll.refresh, 100)
+    this.itemImgListener = () => {
+      newRefresh()
+    }
+    this.$bus.on('itemImageLoad', this.itemImgListener)
+  },
+  destroyed() {
+    this.$bus.off('itemImageLoad', this.itemImgListener)
   }
 }
 </script>

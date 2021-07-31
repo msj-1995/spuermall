@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+    <img :src="showImage" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -23,10 +23,22 @@ export default {
   methods: {
     imageLoad() {
       this.$bus.$emit('itemImageLoad')
+      // 如果路由中包含/home路径，则把事件发送到Home组件
+      /*if(this.$route.path.indexOf('/home')) {
+        this.$bus.$emit('homeItemImageLoad')
+      } else if(this.$route.path.indexOf('/detail')) {
+        this.$bus.$emit('detailItemImageLoad')
+      }*/
     },
     itemClick() {
       // 需要从详情页返回Home,所以使用push最好,并且需要传递商品的id，以便查到更详细的信息：使用动态路由
       this.$router.push('/detail/' + this.goodsItem.iid)
+    }
+  },
+  computed: {
+    // 用于返回图片，因为不用的组件显示图片的方式不同
+    showImage() {
+      return this.goodsItem.image || this.goodsItem.show.img
     }
   }
 }

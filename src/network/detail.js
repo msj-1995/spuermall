@@ -9,6 +9,12 @@ export function getDetail(iid) {
   })
 }
 
+/*商品推荐数据接口*/
+export function getRecommend() {
+  return request({
+    url: '/recommend'
+  })
+}
 
 /*Es5定义类：function Person() {}
 * ES6定义类：class GoodsInfo {}
