@@ -1,8 +1,8 @@
 <template>
   <div id="detail">
     <!--导航-->
-    <detail-nav-bar class="detail-nav" @titleClick="titleClick"></detail-nav-bar>
-    <scroll class="content" ref="scroll">
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="detailNav"></detail-nav-bar>
+    <scroll class="content" ref="scroll" @scroll="contentScroll" :probe-type="3">
       <detail-swiper :top-images="topImages"></detail-swiper>
       <detail-base-info :GoodsInfo="goods"></detail-base-info>
       <detail-shop-info :shop-info="shop"></detail-shop-info>
@@ -28,6 +28,7 @@ import GoodsList from "components/content/goods/GoodsList";
 
 import {getDetail, Goods, Shop, GoodsParams, getRecommend} from "@/network/detail";
 import {itemListenerMixin} from "@/common/mixin";
+import {debounce} from "@/common/utils";
 
 export default {
   name: "Detail",
@@ -42,7 +43,8 @@ export default {
       commentInfo: {},
       recommends: [],
       themeTopYs: [],
-      themeTopY: null
+      themeTopY: null,
+      currentIndex: 0
     }
   },
   components: {
@@ -66,9 +68,26 @@ export default {
       this.themeTopYs.push(this.$refs.params.$el.offsetTop)
       this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+      this.themeTopYs.push(Number.MAX_VALUE)
     },
     titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 100)
+    },
+    // 监听内容的滚动
+    contentScroll(position) {
+      // 1.获取y值
+      const positionY = -position.y
+      const length = this.themeTopYs.length
+      // positionY在0~this.themeTopYs[1]之间，index=0
+      // positionY在this.themeTopYs[1]~this.themeTopYs[2]之间，index=1
+      // positionY在this.themeTopYs[2]~this.themeTopYs[3]之间，index=2
+      // positionY>this.themeTopYs[3],index=3
+      for(let i = 0;i < this.themeTopYs.length-1; i++) {
+        if(this.currentIndex !== i && (i < length-1 && positionY > this.themeTopYs[i] && positionY < this.themeTopYs[i+1])) {
+          this.currentIndex = i
+          this.$refs.detailNav.currentIndex = this.currentIndex
+        }
+      }
     }
   },
   // 组件创建后获取并保存iid
@@ -131,7 +150,7 @@ export default {
   updated() {
   },
   destroyed() {
-    this.$bus.off('itemImageLoad', this.itemImgListener)
+    this.$bus.$off('itemImageLoad', this.itemImgListener)
   }
 }
 </script>
