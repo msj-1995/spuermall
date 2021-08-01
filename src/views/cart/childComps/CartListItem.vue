@@ -2,7 +2,7 @@
   <div>
     <div id="shop-item">
       <div class="item-selector">
-        <checkButton @checkBtnClick="checkBtnClick" v-model="product.checked"></checkButton>
+        <CheckButton @checkBtnClick="checkBtnClick" :isChecked="product.checked"></CheckButton>
       </div>
       <div class="item-img">
         <img :src="product.image" alt="商品图片" />
