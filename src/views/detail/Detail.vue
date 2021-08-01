@@ -33,6 +33,8 @@ import {getDetail, Goods, Shop, GoodsParams, getRecommend} from "@/network/detai
 import {itemListenerMixin, backTopMixin} from "@/common/mixin";
 import {debounce} from "@/common/utils";
 
+import {mapActions} from 'vuex'
+
 export default {
   name: "Detail",
   data() {
@@ -64,6 +66,7 @@ export default {
   },
   mixins: [itemListenerMixin, backTopMixin],
   methods: {
+    ...mapActions(['addCart']),
     imageLoad() {
       this.$refs.scroll.refresh()
 
@@ -110,7 +113,14 @@ export default {
       // 2.将购买的商品添加到购物车:由vuex管理的cartList中,通过mutations提交
       // this.$store.commit('addCart', product)
       // 通过actions分发
-      this.$store.dispatch('addCart', product)
+      /*this.$store.dispatch('addCart', product).then(res => {
+        // 3.添加到购物车成功:要添加成功了再加入到购物车：如何证明已经添加到购物车：dispatch是actions中的方法，我们可以返回一个Promise，如果返回了，就证明添加成功
+        console.log(res);
+      })*/
+      this.addCart(product).then(res => {
+        // 3.添加到购物车成功:要添加成功了再加入到购物车：如何证明已经添加到购物车：dispatch是actions中的方法，我们可以返回一个Promise，如果返回了，就证明添加成功
+        console.log(res);
+      })
     }
   },
   // 组件创建后获取并保存iid
