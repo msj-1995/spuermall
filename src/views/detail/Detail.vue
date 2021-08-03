@@ -13,6 +13,7 @@
     </scroll>
     <detail-bottom-bar @addCart="addToCart"></detail-bottom-bar>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
+    <toast :message="message" :show="show"></toast>
   </div>
 </template>
 
@@ -28,6 +29,7 @@ import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
+import Toast from "components/common/toast/Toast";
 
 import {getDetail, Goods, Shop, GoodsParams, getRecommend} from "@/network/detail";
 import {itemListenerMixin, backTopMixin} from "@/common/mixin";
@@ -49,7 +51,9 @@ export default {
       recommends: [],
       themeTopYs: [],
       themeTopY: null,
-      currentIndex: 0
+      currentIndex: 0,
+      message: '',
+      show: false
     }
   },
   components: {
@@ -62,7 +66,8 @@ export default {
     DetailParamInfo,
     DetailCommentInfo,
     GoodsList,
-    DetailBottomBar
+    DetailBottomBar,
+    Toast
   },
   mixins: [itemListenerMixin, backTopMixin],
   methods: {
@@ -119,7 +124,13 @@ export default {
       })*/
       this.addCart(product).then(res => {
         // 3.添加到购物车成功:要添加成功了再加入到购物车：如何证明已经添加到购物车：dispatch是actions中的方法，我们可以返回一个Promise，如果返回了，就证明添加成功
-        console.log(res);
+        this.show = true;
+        this.message = res;
+        // 停留1.5秒后，toast弹窗消失，并且把message清空
+        setTimeout(() => {
+          this.show = false;
+          this.message = ''
+        }, 1500)
       })
     }
   },
